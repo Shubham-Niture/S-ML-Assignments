@@ -1,0 +1,65 @@
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+iris = sns.load_dataset('iris')
+
+# Display the first few rows
+print("First few rows of the Iris dataset:")
+print(iris.head())
+
+# 2. Simple Random Sampling
+random_sample = iris.sample(n=30, random_state=42)
+
+print("\nRandomly sampled 30 data points:")
+print(random_sample)
+
+# 3. Sample Mean Distribution Analysis
+sample_means = []
+for _ in range(100):
+    sample = iris.sample(n=30, random_state=np.random.randint(0, 1000))
+    sample_mean = sample['sepal_length'].mean()
+    sample_means.append(sample_mean)
+
+# Plot the distribution of sample means
+plt.figure(figsize=(8, 6))
+plt.hist(sample_means, bins=15, edgecolor='black', alpha=0.7)
+plt.title("Distribution of 100 Sample Means (Sepal Length)")
+plt.xlabel("Sample Mean")
+plt.ylabel("Frequency")
+plt.show()
+
+# 4. Systematic Sampling with a Novel Function
+def systematic_sampling(df, fraction):
+    
+    interval = int(1 / fraction)
+    indices = list(range(0, len(df), interval))
+    return df.iloc[indices]
+
+# Apply systematic sampling (20% of the dataset)
+systematic_sample = systematic_sampling(iris, 0.2)
+
+print("\nSystematically sampled dataset 20%:")
+print(systematic_sample)
+
+# Plot original and sampled dataset sizes
+plt.figure(figsize=(12, 5))
+
+# Original dataset plot
+plt.subplot(1, 2, 1)
+plt.hist(iris['sepal_length'], bins=15, edgecolor='black', alpha=0.7)
+plt.title("Original Dataset: Sepal Length")
+plt.xlabel("Sepal Length")
+plt.ylabel("Frequency")
+
+# Systematic sampled dataset plot
+plt.subplot(1, 2, 2)
+plt.hist(systematic_sample['sepal_length'], bins=15, edgecolor='black', alpha=0.7)
+plt.title("Systematic Sample: Sepal Length")
+plt.xlabel("Sepal Length")
+plt.ylabel("Frequency")
+
+plt.tight_layout()
+plt.show()
