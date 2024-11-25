@@ -1,0 +1,61 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = pd.read_csv('winequality-red.csv')
+print("First few rows of the dataset:")
+print(data.head())
+
+print("Descriptive Statistics:")
+print(data.describe())
+
+
+print("\nMean of each column:")
+print(data.mean())
+
+print("\nMedian of each column:")
+print(data.median())
+
+print("\nStandard Deviation of each column:")
+print(data.std())
+
+print("\nVariance of each column:")
+print(data.var())
+
+
+# Visualizations
+# 1. Histogram of Quality
+plt.figure(figsize=(8, 6))
+sns.histplot(data['quality'], bins=10, kde=False, color='blue')
+plt.title('Distribution of Wine Quality')
+plt.xlabel('Quality')
+plt.ylabel('Frequency')
+plt.show()
+
+# 2. Boxplot of Alcohol Content
+plt.figure(figsize=(8, 6))
+sns.boxplot(x=data['alcohol'], color='green')
+plt.title('Boxplot of Alcohol Content')
+plt.xlabel('Alcohol')
+plt.show()
+
+# 3. Correlation Heatmap
+plt.figure(figsize=(12, 10))
+correlation_matrix = data.corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Heatmap of Features')
+plt.show()
+
+# 4. Scatter plot of Alcohol vs. Quality
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x=data['alcohol'], y=data['quality'], color='red')
+plt.title('Scatter Plot of Alcohol vs Quality')
+plt.xlabel('Alcohol')
+plt.ylabel('Quality')
+plt.show()
+
+# 5. Pairplot for selected features
+selected_features = ['alcohol', 'citric acid', 'residual sugar', 'quality']
+sns.pairplot(data[selected_features], diag_kind='kde', hue='quality', palette='coolwarm')
+plt.suptitle('Pairplot for Selected Features', y=1.02)
+plt.show()
