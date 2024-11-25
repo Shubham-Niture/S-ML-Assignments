@@ -1,0 +1,48 @@
+import seaborn as sns
+from scipy.stats import ttest_ind, zscore, f_oneway, pearsonr
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = sns.load_dataset('iris')
+
+# T-Test: 
+setosa = iris[iris['species'] == 'setosa']['petal_length']
+versicolor = iris[iris['species'] == 'versicolor']['petal_length']
+t_stat, t_pvalue = ttest_ind(setosa, versicolor)
+print(f"T-Test: t-statistic={t_stat:.4f}, p-value={t_pvalue:.4f}")
+
+# Z-Test: 
+setosa_sepal_length = iris[iris['species'] == 'setosa']['sepal_length']
+mean_setosa = setosa_sepal_length.mean()
+std_setosa = setosa_sepal_length.std(ddof=1)
+n_setosa = len(setosa_sepal_length)
+z_stat = (mean_setosa - 5.0) / (std_setosa / (n_setosa ** 0.5))
+print(f"Z-Test: z-statistic={z_stat:.4f}")
+
+# ANOVA: 
+setosa_width = iris[iris['species'] == 'setosa']['petal_width']
+versicolor_width = iris[iris['species'] == 'versicolor']['petal_width']
+virginica_width = iris[iris['species'] == 'virginica']['petal_width']
+f_stat, f_pvalue = f_oneway(setosa_width, versicolor_width, virginica_width)
+print(f"ANOVA: F-statistic={f_stat:.4f}, p-value={f_pvalue:.4f}")
+
+# Correlation and Regression:
+sepal_length = iris['sepal_length']
+petal_length = iris['petal_length']
+correlation, p_corr = pearsonr(sepal_length, petal_length)
+print(f"Correlation: r={correlation:.4f}, p-value={p_corr:.4f}")
+
+# Linear Regression
+X = sm.add_constant(sepal_length)
+model = sm.OLS(petal_length, X).fit()
+print(model.summary())
+
+# Plot Regression
+plt.scatter(sepal_length, petal_length, label="Data Points")
+plt.plot(sepal_length, model.predict(X), color="red", label="Regression Line")
+plt.title("Regression: Sepal Length vs. Petal Length")
+plt.xlabel("Sepal Length")
+plt.ylabel("Petal Length")
+plt.legend()
+plt.show()
